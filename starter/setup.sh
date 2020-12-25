@@ -1,4 +1,4 @@
-export DATABASE_URL='postgres://@localhost:5432/'
+export DATABASE_URL='postgres://labquxucroysky:bb2625c002599ad1383453edc2dfb5ed656767178e405f8dd212675f2c16242d@ec2-34-237-166-54.compute-1.amazonaws.com:5432/d2ebr8s5v6qlsa'
 export AUTH0_DOMAIN='fsnd-aj.us.auth0.com'
 export ALGORITHMS = ['RS256']
 export API_AUDIENCE = 'coffee'
