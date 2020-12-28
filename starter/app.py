@@ -95,11 +95,6 @@ def dashboard():
                            userinfo_pretty=json.dumps(session[constants.JWT_PAYLOAD], indent=4))
 
 
-@app.route('/')
-def index():
-    return "Welcome to the Coffee Shop API"
-
-
 @app.route('/drinks')
 @requires_auth('get:drinks')
 def view_drinks(jwt):
