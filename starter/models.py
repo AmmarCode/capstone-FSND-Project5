@@ -19,7 +19,7 @@ def setup_db(app, database_path=database_path):
 
 class Drink(db.Model):
     id = db.Column(Integer, primary_key=True)
-    title = db.Column(String, nullable=False)
+    title = db.Column(String, unique=True, nullable=False)
 
     def insert(self):
         db.session.add(self)
@@ -41,7 +41,7 @@ class Drink(db.Model):
 
 class Dessert(db.Model):
     id = db.Column(Integer, primary_key=True)
-    title = db.Column(String, nullable=False)
+    title = db.Column(String, unique=True, nullable=False)
 
     def insert(self):
         db.session.add(self)

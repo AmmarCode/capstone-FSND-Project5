@@ -8,6 +8,8 @@ from app import create_app
 from models import Dessert, Drink, setup_db
 
 
+database_path = os.environ['DATABASE_URL']
+
 class CapstoneTestCase(unittest.TestCase):
     """This class represents the capstone test case"""
 
@@ -16,8 +18,7 @@ class CapstoneTestCase(unittest.TestCase):
         self.app = create_app()
         self.client = self.app.test_client
         self.database_name = "capstone_test"
-        self.database_path = "postgres://{}/{}".format(
-            'localhost:5432', self.database_name)
+        self.database_path = database_path
         setup_db(self.app, self.database_path)
 
         self.new_drink = {
@@ -36,7 +37,7 @@ class CapstoneTestCase(unittest.TestCase):
             "title": "updated dessert"
         }
 
-        self.manager_token = {"Authorization": "bearer {}".format("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImNTV3cyRHVPdFFyMlA2SE9aM1Y2biJ9.eyJpc3MiOiJodHRwczovL2ZzbmQtYWoudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDVmY2Q2ZGI1MDVhZWIzMDA3NWQ3M2ExOSIsImF1ZCI6ImNvZmZlZSIsImlhdCI6MTYwODkxOTAzOSwiZXhwIjoxNjA5MDA1NDM5LCJhenAiOiJ6d0w5WXhaSWM1VDNseFVScHNOODF6aUhnT1hsMlYyRSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiZGVsZXRlOmRlc3NlcnRzIiwiZGVsZXRlOmRyaW5rcyIsImdldDpkZXNzZXJ0cyIsImdldDpkcmlua3MiLCJwYXRjaDpkZXNzZXJ0cyIsInBhdGNoOmRyaW5rcyIsInBvc3Q6ZGVzc2VydHMiLCJwb3N0OmRyaW5rcyJdfQ.sGG9waNTCtR3pxxNCl6yiraPklHJWvdQUD7Q8SN9KU0CaUNr_HYskvb17OD8dnW-MNJMqMp849aRfFNgVwZNxkJiLmkfZ7xz4erXeOiDR7K9O_EvcAd0yx-TiFLKAcqjdFalyypu4yKC4O6FhMAIfUlrofbXiUGAfiivCzTYOAo5kqTRKGwUAtH7JvfHGDKF8w6qxL75Lfat60Uoxo2JOJqu23Roi3-RUzjjKoGpka9cHjGU1n3XOQaoofuAIMVgHTi-dNjxyEUboPlFlD2jutZnWnaUoecqhVoj9EUimduQY9Yow_lJMtFxF4Xo0CU0J5ti4FBLAiIGvL6YGwxvAw")}
+        self.manager_token = {"Authorization": "bearer {}".format("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImNTV3cyRHVPdFFyMlA2SE9aM1Y2biJ9.eyJpc3MiOiJodHRwczovL2ZzbmQtYWoudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDVmY2Q2ZGI1MDVhZWIzMDA3NWQ3M2ExOSIsImF1ZCI6ImNvZmZlZSIsImlhdCI6MTYwOTEwMDcwNCwiZXhwIjoxNjA5MTg3MTA0LCJhenAiOiJ6d0w5WXhaSWM1VDNseFVScHNOODF6aUhnT1hsMlYyRSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiZGVsZXRlOmRlc3NlcnRzIiwiZGVsZXRlOmRyaW5rcyIsImdldDpkZXNzZXJ0cyIsImdldDpkcmlua3MiLCJwYXRjaDpkZXNzZXJ0cyIsInBhdGNoOmRyaW5rcyIsInBvc3Q6ZGVzc2VydHMiLCJwb3N0OmRyaW5rcyJdfQ.nVmy4gXMiq47ssw87kwiDRAWePR9cu1doz9mQolYC9QlDUyiPH-vcaeI5xzFpKA-nwHADWEWwZvK347dFq01PqF2fpaexDz-QUaisHMmnj5aMQXHguJ_2NYj5-mJ6XUYWC2ShYkniToz7GiXYN3-pRErTKQfCW_E7MlxW677CwYxjTC7XIzX3CcYmHkkFmZmN7EeMtbXcpFZ2L0q2jj3PY0piSRpr8aU9F523BV8765xlUtb3K3PqHJY0rUukEuXTY1eza5MnFjan9agYiuSHfta1mtU9CIbhSapHjsFTWcZNeakYEAWl0yZyN6aNw-T8N6A48-ArtTqj_NxfImbnw")}
 
         self.barista_token = {"Authorization": "bearer {}".format("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImNTV3cyRHVPdFFyMlA2SE9aM1Y2biJ9.eyJpc3MiOiJodHRwczovL2ZzbmQtYWoudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDVmY2Q2ZTA0OTE0OTE2MDA3ODBkMDkxOCIsImF1ZCI6ImNvZmZlZSIsImlhdCI6MTYwODkxOTM3NywiZXhwIjoxNjA5MDA1Nzc3LCJhenAiOiJ6d0w5WXhaSWM1VDNseFVScHNOODF6aUhnT1hsMlYyRSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiZ2V0OmRlc3NlcnRzIiwiZ2V0OmRyaW5rcyJdfQ.dSnCMKz4AUHqJ6_Yw-T2wRVi_CZh0XZ33KsOMUf54ntX2kl61CGXOYBYamSG-bVLrgmNOFoAU1aNDDhcP3-7mrrSoSnLedQQBqVMa3HfsInfC7MHVBP6NhfGxXz3TzmH9q1w77olJxT7XuP30bM5cYyzttXQfUma2uNztKsGtTUsshs3VMEL5G--ddQ40Oz3QTC3dHTZ61AZ8BtsMZVi3PdCqCMUpHAtV3KY6JG3weokdEmpLwPS8OFWqRslJUI2A4rvwL6lLQq2ru0CTKDTrX9cGv_rXSBXoPZPEDwErEvEZFoNApKgYl5WY84YETFy73omuqLZAdVMAflrcUlX6g")}
 
