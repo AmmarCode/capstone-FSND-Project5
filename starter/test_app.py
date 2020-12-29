@@ -103,7 +103,7 @@ class CapstoneTestCase(unittest.TestCase):
 
     def test_update_drink(self):
         """Test update drink"""
-        res = self.client().patch('/drinks/3', json=self.update_drink,
+        res = self.client().patch('/drinks/5', json=self.update_drink,
                                   headers=self.manager_token)
         data = json.loads(res.data)
 
@@ -112,7 +112,7 @@ class CapstoneTestCase(unittest.TestCase):
 
     def test_update_dessert(self):
         """Test update dessert"""
-        res = self.client().patch('/desserts/3', json=self.update_dessert,
+        res = self.client().patch('/desserts/5', json=self.update_dessert,
                                   headers=self.manager_token)
         data = json.loads(res.data)
 
@@ -121,7 +121,7 @@ class CapstoneTestCase(unittest.TestCase):
 
     def test_delete_drink(self):
         """Test delete drink"""
-        res = self.client().delete('/drinks/2', headers=self.manager_token)
+        res = self.client().delete('/drinks/4', headers=self.manager_token)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -129,7 +129,7 @@ class CapstoneTestCase(unittest.TestCase):
 
     def test_delete_dessert(self):
         """Test delete dessert"""
-        res = self.client().delete('/desserts/2', headers=self.manager_token)
+        res = self.client().delete('/desserts/4', headers=self.manager_token)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
