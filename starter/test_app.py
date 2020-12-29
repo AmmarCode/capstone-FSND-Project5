@@ -9,6 +9,9 @@ from models import Dessert, Drink, setup_db
 
 
 database_path = os.environ['DATABASE_URL']
+manager_token = os.environ['MANAGER_TOKEN']
+barista_token = os.environ['BARISTA_TOKEN']
+
 
 class CapstoneTestCase(unittest.TestCase):
     """This class represents the capstone test case"""
@@ -37,9 +40,11 @@ class CapstoneTestCase(unittest.TestCase):
             "title": "updated dessert"
         }
 
-        self.manager_token = {"Authorization": "bearer {}".format("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImNTV3cyRHVPdFFyMlA2SE9aM1Y2biJ9.eyJpc3MiOiJodHRwczovL2ZzbmQtYWoudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDVmY2Q2ZGI1MDVhZWIzMDA3NWQ3M2ExOSIsImF1ZCI6ImNvZmZlZSIsImlhdCI6MTYwOTIxMTMzMywiZXhwIjoxNjA5Mjk3NzMzLCJhenAiOiJ6d0w5WXhaSWM1VDNseFVScHNOODF6aUhnT1hsMlYyRSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiZGVsZXRlOmRlc3NlcnRzIiwiZGVsZXRlOmRyaW5rcyIsImdldDpkZXNzZXJ0cyIsImdldDpkcmlua3MiLCJwYXRjaDpkZXNzZXJ0cyIsInBhdGNoOmRyaW5rcyIsInBvc3Q6ZGVzc2VydHMiLCJwb3N0OmRyaW5rcyJdfQ.BztvPK5_M99OpAtLhFDp99x_tfo2GDmIj5EceIKPaya-o_KZKlinbxbfgvBMMVhGNfSw9BZrycmWRnV8kU4A25N7zNFb9WYMXFL179SnECZSAGJF0HzYXebfU0z3zgr0uZRDQBwzWIhkjs5F9jNfQDuG0fbL5sUNbvlF-79O1fNTWhQTwVtF0iylJwvWrnBCSgT0Ymj4zf43SSeP3Sy27wisNeXZew2X4XpIOKkI--WpuZYNuNw5VhIH3OXtWMNjvuHZV9tJfKti_lh_dD8kzEEPVNlSg6vF4eIVesx31yCHv58Ahh9uoMlFGvj4espzDVL5FIVRhZY-ZlARmyJ4kA")}
+        self.manager_token = {
+            "Authorization": "bearer {}".format(manager_token)}
 
-        self.barista_token = {"Authorization": "bearer {}".format("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImNTV3cyRHVPdFFyMlA2SE9aM1Y2biJ9.eyJpc3MiOiJodHRwczovL2ZzbmQtYWoudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDVmY2Q2ZTA0OTE0OTE2MDA3ODBkMDkxOCIsImF1ZCI6ImNvZmZlZSIsImlhdCI6MTYwOTIyMTcxOCwiZXhwIjoxNjA5MzA4MTE4LCJhenAiOiJ6d0w5WXhaSWM1VDNseFVScHNOODF6aUhnT1hsMlYyRSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiZ2V0OmRlc3NlcnRzIiwiZ2V0OmRyaW5rcyJdfQ.UMz7KEdXnBFVbYvZpz0nPAIP-2fiLx1RFBmNNV882y5-RuJlz3tiiZVqfHIRalW7Rs9q-NFEmToOhCozujKtF_YXfPHSFfbvfB6raTF_JktBnQc7PQwDZm3cuiR-r7g2livQwu5M5f0i-rwNEOgRvXsApj7kElvizAJtTqThLv4J3s4rRysq6DlCxCNu1IRXKXIcP4JZzDV4ZR7CHpsLpTsD0s2gzQzRcx8P1tJ-uOqjy3nJXm-nIMDsFrmt4nXz2eGfmM5O9aLyfphOkpXJQcLnGOKrmZ_ZKMJmVJE3pc18udIx1NbVf1oPpZL7MI5mwjxPKis7TxpjZWjLA7MUMg")}
+        self.barista_token = {
+            "Authorization": "bearer {}".format(barista_token)}
 
         # binds the app to the current context
         with self.app.app_context():
@@ -54,7 +59,8 @@ class CapstoneTestCase(unittest.TestCase):
 
     def test_post_new_drink(self):
         """Test post new drink"""
-        res = self.client().post('/drinks', json=self.new_drink, headers=self.manager_token)
+        res = self.client().post('/drinks', json=self.new_drink,
+                                 headers=self.manager_token)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)

@@ -15,11 +15,9 @@ def create_app(test_config=None):
     CORS(app)
     setup_db(app)
 
-
     @app.route('/')
     def index():
         return "Welcome to the Coffee Shop API"
-
 
     @app.route('/drinks')
     @requires_auth('get:drinks')
@@ -35,7 +33,6 @@ def create_app(test_config=None):
             'drinks': [drink.format() for drink in drinks]
         })
 
-
     @app.route('/desserts')
     @requires_auth('get:desserts')
     def view_dessert(jwt):
@@ -49,7 +46,6 @@ def create_app(test_config=None):
             'success': True,
             'desserts': [dessert.format() for dessert in desserts]
         })
-
 
     @app.route('/drinks', methods=['POST'])
     @requires_auth('post:drinks')
@@ -65,7 +61,6 @@ def create_app(test_config=None):
             'drinks': [drink.format()]
         })
 
-
     @app.route('/desserts', methods=['POST'])
     @requires_auth('post:desserts')
     def create_dessert(jwt):
@@ -79,7 +74,6 @@ def create_app(test_config=None):
             'success': True,
             'desserts': [dessert.format()]
         })
-
 
     @app.route('/drinks/<id>', methods=['PATCH'])
     @requires_auth('patch:drinks')
@@ -102,7 +96,6 @@ def create_app(test_config=None):
         else:
             abort(404)
 
-
     @app.route('/desserts/<id>', methods=['PATCH'])
     @requires_auth('patch:desserts')
     def update_dessert(jwt, id):
@@ -124,7 +117,6 @@ def create_app(test_config=None):
         else:
             abort(404)
 
-
     @app.route('/drinks/<id>', methods=['DELETE'])
     @requires_auth('delete:drinks')
     def delete_drink(jwt, id):
@@ -140,7 +132,6 @@ def create_app(test_config=None):
                 abort(422)
         else:
             abort(404)
-
 
     @app.route('/desserts/<id>', methods=['DELETE'])
     @requires_auth('delete:desserts')
@@ -158,7 +149,6 @@ def create_app(test_config=None):
         else:
             abort(404)
 
-
     @app.errorhandler(AuthError)
     def auth_error(error):
         return jsonify({
@@ -166,7 +156,6 @@ def create_app(test_config=None):
             'error': error.status_code,
             'message': error.error
         }), error.status_code
-
 
     @app.errorhandler(404)
     def not_found(error):
@@ -176,7 +165,6 @@ def create_app(test_config=None):
             "message": "resource not found"
         }), 404
 
-
     @app.errorhandler(401)
     def unauthorised(error):
         return jsonify({
@@ -184,7 +172,6 @@ def create_app(test_config=None):
             "error": 401,
             "message": "unauthorised"
         }), 401
-
 
     @app.errorhandler(400)
     def bad_request(error):
@@ -194,8 +181,8 @@ def create_app(test_config=None):
             "message": "bad_request"
         }), 400
 
-
     return app
+
 
 app = create_app()
 
