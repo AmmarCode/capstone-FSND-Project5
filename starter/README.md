@@ -1,7 +1,7 @@
 # Coffee Shop API
 
 ## Full Stack Nano - IAM Final Project
-This is a Coffee Shop API:
+This is a Coffee Shop API, Hosted live on heroku: https://capstone-coffee.herokuapp.com/
 1) Allows the shop barista to see the available drinks and desserts.
 2) Allows the shop managers to perform CRUD actions for Drinks and Desserts.
 
