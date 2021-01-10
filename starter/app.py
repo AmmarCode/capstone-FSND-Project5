@@ -1,23 +1,112 @@
 import json
 import os
+from functools import wraps
+from os import environ as env
 
-from flask import Flask, abort, jsonify, request
+from authlib.integrations.flask_client import OAuth
+from dotenv import find_dotenv, load_dotenv
+from flask import (Flask, abort, jsonify, redirect, render_template, request,
+                   session, url_for)
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from six.moves.urllib.parse import urlencode
+from werkzeug.exceptions import HTTPException
 
-from auth import AuthError, requires_auth
+import constants
+from auth import (AuthError, get_token_auth_header, requires_auth,
+                  verify_decode_jwt)
 from models import Dessert, Drink, setup_db
+
+ENV_FILE = find_dotenv()
+if ENV_FILE:
+    load_dotenv(ENV_FILE)
+
+AUTH0_CALLBACK_URL = env.get(constants.AUTH0_CALLBACK_URL)
+AUTH0_CLIENT_ID = env.get(constants.AUTH0_CLIENT_ID)
+AUTH0_CLIENT_SECRET = env.get(constants.AUTH0_CLIENT_SECRET)
+AUTH0_DOMAIN = env.get(constants.AUTH0_DOMAIN)
+AUTH0_BASE_URL = 'https://' + AUTH0_DOMAIN
+AUTH0_AUDIENCE = env.get(constants.AUTH0_AUDIENCE)
 
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
+    app.secret_key = constants.SECRET_KEY
     CORS(app)
     setup_db(app)
 
+    @app.errorhandler(Exception)
+    def handle_auth_error(ex):
+        response = jsonify(message=str(ex))
+        response.status_code = (
+            ex.code if isinstance(ex, HTTPException) else 500)
+        return response
+
+    oauth = OAuth(app)
+
+    auth0 = oauth.register(
+        'auth0',
+        client_id=AUTH0_CLIENT_ID,
+        client_secret=AUTH0_CLIENT_SECRET,
+        api_base_url=AUTH0_BASE_URL,
+        access_token_url=AUTH0_BASE_URL + '/oauth/token',
+        authorize_url=AUTH0_BASE_URL + '/authorize',
+        client_kwargs={
+            'scope': 'openid profile email',
+        },
+    )
+
+    def requires_auth0(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            if constants.PROFILE_KEY not in session:
+                return redirect('/login')
+            return f(*args, **kwargs)
+
+        return decorated
+
     @app.route('/')
-    def index():
-        return "Welcome to the Coffee Shop API"
+    def home():
+        return render_template('home.html')
+
+    @app.route('/callback')
+    def callback_handling():
+        # Handles response from token endpoint
+        token = auth0.authorize_access_token()
+        session['token'] = token['access_token']
+        print(session['token'])
+
+        resp = auth0.get('userinfo')
+        userinfo = resp.json()
+
+        # Store the user information in flask session.
+        session['jwt_payload'] = userinfo
+        session['profile'] = {
+            'user_id': userinfo['sub'],
+            'name': userinfo['name'],
+            'picture': userinfo['picture']
+        }
+        return redirect('/dashboard')
+
+    @app.route('/login')
+    def login():
+        return auth0.authorize_redirect(redirect_uri=AUTH0_CALLBACK_URL, audience=AUTH0_AUDIENCE)
+
+    @app.route('/logout')
+    def logout():
+        session.clear()
+        params = {'returnTo': url_for(
+            'home', _external=True), 'client_id': AUTH0_CLIENT_ID}
+        return redirect(auth0.api_base_url + '/v2/logout?' + urlencode(params))
+
+    @app.route('/dashboard')
+    @requires_auth0
+    def dashboard():
+        return render_template('dashboard.html',
+                               userinfo=session[constants.PROFILE_KEY],
+                               userinfo_pretty=json.dumps(session[constants.
+                               JWT_PAYLOAD], indent=4), token=session['token'])
 
     @app.route('/drinks')
     @requires_auth('get:drinks')
@@ -187,4 +276,4 @@ def create_app(test_config=None):
 app = create_app()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='localhost', port=env.get('PORT', 3000), debug=True)
